@@ -9,7 +9,8 @@ class GstreamerConan(ConanFile):
     url = "https://github.com/conanos/gstreamer"
     homepage = "https://github.com/GStreamer/gstreamer"
     license = "GPLv2+"
-    exports = ["COPYING"]
+    patch = "gst-debugutils-characters-errorcode.patch"
+    exports = ["COPYING", patch]
     generators = "gcc","visual_studio"
     settings = "os", "compiler", "build_type", "arch"
     options = {
@@ -42,26 +43,26 @@ class GstreamerConan(ConanFile):
         del self.settings.compiler.libcxx
 
     def source(self):
-        #tools.get("{0}/archive/{1}.tar.gz".format(self.homepage, self.version))
-        #extracted_dir = self.name.split('-')[0] + "-" + self.version
-        #os.rename(extracted_dir, self.source_subfolder)
-
-        #remotes = {'origin': 'https://github.com/GStreamer/gstreamer.git'}
-        #tools.mkdir(self._source_subfolder)
-        #with tools.chdir(self._source_subfolder):
-        #    self.run('git init')
-        #    for key, val in self.remotes.items():
-        #        self.run("git remote add %s %s"%(key, val))
-        #    self.run('git fetch --all')
-        #    self.run('git reset --hard %s'%(self.version))
-        #    self.run('git submodule update --init --recursive')
-        
-        url_ = 'https://github.com/GStreamer/gstreamer/archive/{version}.tar.gz'.format(version=self.version)
-        tools.get(url_)
+        remotes = {'origin': 'https://github.com/GStreamer/gstreamer.git'}
         extracted_dir = self.name + "-" + self.version
-        os.rename(extracted_dir, self._source_subfolder)
-        #with tools.chdir(self._source_subfolder):
-        #    self.run('git submodule update --init --recursive')
+        tools.mkdir(extracted_dir)
+        with tools.chdir(extracted_dir):
+            self.run('git init')
+            for key, val in remotes.items():
+                self.run("git remote add %s %s"%(key, val))
+            self.run('git fetch --all')
+            self.run('git reset --hard %s'%(self.version))
+            self.run('git submodule update --init --recursive')
+        if self.settings.os == "Windows":
+            tools.patch(patch_file=self.patch)
+        os.rename(extracted_dir, self._source_subfolder)    
+
+        #url_ = 'https://github.com/GStreamer/gstreamer/archive/{version}.tar.gz'.format(version=self.version)
+        #tools.get(url_)
+        #if self.settings.os == "Windows":
+        #    tools.patch(patch_file=self.patch)
+        #extracted_dir = self.name + "-" + self.version
+        #os.rename(extracted_dir, self._source_subfolder)        
 
 
     def build(self):
