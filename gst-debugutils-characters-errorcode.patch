@@ -1,0 +1,12 @@
+diff -Nur gstreamer-1.14.4/gst/gstdebugutils.c gstreamer-1.14.4-debugutils/gst/gstdebugutils.c
+--- gstreamer-1.14.4/gst/gstdebugutils.c	2018-10-02 14:53:02.000000000 -0700
++++ gstreamer-1.14.4-debugutils/gst/gstdebugutils.c	2018-11-29 18:58:51.872287305 -0800
+@@ -191,7 +191,7 @@
+         /* too long, ellipsize */
+         if (!(details & GST_DEBUG_GRAPH_SHOW_FULL_PARAMS) &&
+             strlen (value_str) > PARAM_MAX_LENGTH)
+-          ellipses = "…";
++          ellipses = "...";
+         else
+           ellipses = "";
+ 
