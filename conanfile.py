@@ -17,15 +17,13 @@ class GstreamerConan(ConanFile):
         "shared": [True, False],
         'fPIC': [True, False]
     }
-    default_options = { 'shared': False, 'fPIC': True }
+    default_options = { 'shared': True, 'fPIC': True }
     _source_subfolder = "source_subfolder"
     _build_subfolder = "build_subfolder"    
 
     def requirements(self):
         self.requires.add("glib/2.58.1@conanos/stable")
         self.requires.add("gtk-doc-lite/1.29@conanos/stable")
-
-        config_scheme(self)
     
     def build_requirements(self):
         self.build_requires("libffi/3.299999@conanos/stable")
@@ -37,6 +35,8 @@ class GstreamerConan(ConanFile):
     
     def configure(self):
         del self.settings.compiler.libcxx
+
+        config_scheme(self)
 
     def source(self):
         remotes = {'origin': 'https://github.com/GStreamer/gstreamer.git'}
